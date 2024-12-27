@@ -8,17 +8,6 @@ interface Config {
   download_dir: string;
 }
 
-const configFields = [
-  { key: "download_dir", label: "视频下载路径", type: "text" },
-  { key: "openai_key", label: "OpenAI 密钥", type: "text" },
-  {
-    key: "whisper_model",
-    label: "Whisper 模型",
-    type: "select",
-    options: ["tiny", "base", "small", "medium", "large"],
-  },
-];
-
 const Settings: React.FC = () => {
   const [config, setConfig] = useState<Config>({
     openai_key: "",
@@ -46,9 +35,11 @@ const Settings: React.FC = () => {
     try {
       await UpdateConfig(config);
       setStatus("保存成功！");
+      setTimeout(() => setStatus(""), 3000); // 清除状态
     } catch (err) {
       console.error("保存配置失败", err);
       setStatus("保存失败！");
+      setTimeout(() => setStatus(""), 3000); // 清除状态
     }
   };
 
@@ -56,71 +47,117 @@ const Settings: React.FC = () => {
     setConfig({ ...config, [key]: value });
   };
 
+  const handleSelectFolder = async () => {
+    try {
+      const selectedPath = await window.wails.FileDialog.OpenDialog({
+        title: "选择下载路径",
+        directory: true,
+        multiple: false,
+      });
+      if (selectedPath) {
+        setConfig({ ...config, download_dir: selectedPath });
+      }
+    } catch (err) {
+      console.error("选择路径失败", err);
+    }
+  };
+
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">设置</h2>
-      {configFields.map((field) => (
-        <div className="mb-4" key={field.key}>
-          <label className="block text-sm font-medium text-gray-700">
-            {field.label}:
-          </label>
-          {field.type === "text" ? (
-            <input
-              type="text"
-              className="w-full p-2 border border-gray-300 rounded mt-1"
-              value={config[field.key as keyof Config]}
-              onChange={(e) => handleChange(field.key, e.target.value)}
-            />
-          ) : (
-            <select
-              className="w-full p-2 border border-gray-300 rounded mt-1"
-              value={config[field.key as keyof Config]}
-              onChange={(e) => handleChange(field.key, e.target.value)}
+    <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition duration-300">
+      {/* Title */}
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
+        设置
+      </h2>
+
+      {/* OpenAI Key */}
+      <div className="mb-8">
+        <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
+          OpenAI 密钥:
+        </label>
+        <input
+          type="text"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          value={config.openai_key}
+          onChange={(e) => handleChange("openai_key", e.target.value)}
+          placeholder="请输入 OpenAI 密钥"
+        />
+      </div>
+
+      {/* Whisper Model */}
+      <div className="mb-8">
+        <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
+          Whisper 模型:
+        </label>
+        <div className="relative">
+          <select
+            className="w-full px-4 py-3 appearance-none border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            value={config.whisper_model}
+            onChange={(e) => handleChange("whisper_model", e.target.value)}
+          >
+            {["tiny", "base", "small", "medium", "large"].map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400 dark:text-gray-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
             >
-              {field.options?.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          )}
+              <path
+                fillRule="evenodd"
+                d="M5.293 7.707a1 1 0 011.414 0L10 11.414l3.293-3.707a1 1 0 011.414 0 .75.75 0 010 1.06l-4 4a1 1 0 01-1.414 0l-4-4a.75.75 0 010-1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </span>
         </div>
-      ))}
-      <button
-        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={handleSave}
-      >
-        保存
-        <svg
-          className={`ml-2 h-4 w-4 animate-spin ${
-            status === "正在保存..." ? "" : "hidden"
-          }`}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
+      </div>
+
+      {/* Download Path */}
+      <div className="mb-8">
+        <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
+          视频下载路径:
+        </label>
+        <div className="flex items-center space-x-4">
+          <input
+            type="text"
+            className="flex-grow px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            value={config.download_dir}
+            readOnly
+          />
+          <button
+            onClick={handleSelectFolder}
+            className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            选择路径
+          </button>
+        </div>
+      </div>
+
+      {/* Save Button */}
+      <div className="text-center">
+        <button
+          onClick={handleSave}
+          className="w-full px-5 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 focus:ring-2 focus:ring-green-400 focus:outline-none"
         >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C4.477 0 0 4.477 0 10h4zm2 5.291A7.963 7.963 0 014 12H0c0 2.42.862 4.642 2.291 6.292l1.415-1.415z"
-          ></path>
-        </svg>
-      </button>
-      <p
-        className={`mt-2 text-sm ${
-          status === "保存成功！" ? "text-green-600" : "text-red-600"
-        }`}
-      >
-        {status}
-      </p>
+          保存
+        </button>
+      </div>
+
+      {/* Status Message */}
+      {status && (
+        <p
+          className={`mt-4 text-sm text-center ${
+            status === "保存成功！" ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {status}
+        </p>
+      )}
     </div>
   );
 };
