@@ -4,6 +4,7 @@ export namespace config {
 	    openai_key: string;
 	    whisper_model: string;
 	    whisper_language: string;
+	    download_dir: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new AppConfig(source);
@@ -14,6 +15,7 @@ export namespace config {
 	        this.openai_key = source["openai_key"];
 	        this.whisper_model = source["whisper_model"];
 	        this.whisper_language = source["whisper_language"];
+	        this.download_dir = source["download_dir"];
 	    }
 	}
 

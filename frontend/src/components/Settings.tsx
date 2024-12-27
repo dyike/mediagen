@@ -5,9 +5,11 @@ interface Config {
   openai_key: string;
   whisper_model: string;
   whisper_language: string;
+  download_dir: string;
 }
 
 const configFields = [
+  { key: "download_dir", label: "视频下载路径", type: "text" },
   { key: "openai_key", label: "OpenAI 密钥", type: "text" },
   {
     key: "whisper_model",
@@ -22,6 +24,7 @@ const Settings: React.FC = () => {
     openai_key: "",
     whisper_model: "medium",
     whisper_language: "zh",
+    download_dir: "",
   });
 
   const [status, setStatus] = useState<string>("");
