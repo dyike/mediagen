@@ -23,21 +23,15 @@ const Downloader: React.FC = () => {
 
   return (
     <div>
-      <h1>视频笔记生成器</h1>
+      <h2 className="text-xl font-semibold mb-4">下载器</h2>
       <input
         type="text"
         placeholder="输入视频链接"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
+        className="w-full p-2 border border-gray-300 rounded mb-4"
       />
-      <button onClick={handleDownload}>生成笔记</button>
-      <p>{status}</p>
-      {result && (
-        <div>
-          <h2>整理结果</h2>
-          <pre>{result}</pre>
-        </div>
-      )}
+      <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        下载
+      </button>
     </div>
   );
 };

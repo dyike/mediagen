@@ -7,6 +7,16 @@ interface Config {
   whisper_language: string;
 }
 
+const configFields = [
+  { key: "openai_key", label: "OpenAI 密钥", type: "text" },
+  {
+    key: "whisper_model",
+    label: "Whisper 模型",
+    type: "select",
+    options: ["tiny", "base", "small", "medium", "large"],
+  },
+];
+
 const Settings: React.FC = () => {
   const [config, setConfig] = useState<Config>({
     openai_key: "",
@@ -16,7 +26,6 @@ const Settings: React.FC = () => {
 
   const [status, setStatus] = useState<string>("");
 
-  // 加载配置
   useEffect(() => {
     const fetchConfig = async () => {
       try {
@@ -29,7 +38,6 @@ const Settings: React.FC = () => {
     fetchConfig();
   }, []);
 
-  // 更新配置
   const handleSave = async () => {
     setStatus("正在保存...");
     try {
@@ -41,54 +49,75 @@ const Settings: React.FC = () => {
     }
   };
 
+  const handleChange = (key: string, value: string) => {
+    setConfig({ ...config, [key]: value });
+  };
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>设置</h1>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          OpenAI 密钥:
-          <input
-            type="text"
-            value={config.openai_key}
-            onChange={(e) =>
-              setConfig({ ...config, openai_key: e.target.value })
-            }
-            placeholder="输入 OpenAI 密钥"
-          />
-        </label>
-      </div>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Whisper 模型:
-          <select
-            value={config.whisper_model}
-            onChange={(e) =>
-              setConfig({ ...config, whisper_model: e.target.value })
-            }
-          >
-            <option value="tiny">Tiny</option>
-            <option value="base">Base</option>
-            <option value="small">Small</option>
-            <option value="medium">Medium</option>
-            <option value="large">Large</option>
-          </select>
-        </label>
-      </div>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Whisper 语言:
-          <input
-            type="text"
-            value={config.whisper_language}
-            onChange={(e) =>
-              setConfig({ ...config, whisper_language: e.target.value })
-            }
-            placeholder="输入语言代码（如 zh, en）"
-          />
-        </label>
-      </div>
-      <button onClick={handleSave}>保存</button>
-      <p>{status}</p>
+    <div>
+      <h2 className="text-xl font-semibold mb-4">设置</h2>
+      {configFields.map((field) => (
+        <div className="mb-4" key={field.key}>
+          <label className="block text-sm font-medium text-gray-700">
+            {field.label}:
+          </label>
+          {field.type === "text" ? (
+            <input
+              type="text"
+              className="w-full p-2 border border-gray-300 rounded mt-1"
+              value={config[field.key as keyof Config]}
+              onChange={(e) => handleChange(field.key, e.target.value)}
+            />
+          ) : (
+            <select
+              className="w-full p-2 border border-gray-300 rounded mt-1"
+              value={config[field.key as keyof Config]}
+              onChange={(e) => handleChange(field.key, e.target.value)}
+            >
+              {field.options?.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+      ))}
+      <button
+        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        onClick={handleSave}
+      >
+        保存
+        <svg
+          className={`ml-2 h-4 w-4 animate-spin ${
+            status === "正在保存..." ? "" : "hidden"
+          }`}
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C4.477 0 0 4.477 0 10h4zm2 5.291A7.963 7.963 0 014 12H0c0 2.42.862 4.642 2.291 6.292l1.415-1.415z"
+          ></path>
+        </svg>
+      </button>
+      <p
+        className={`mt-2 text-sm ${
+          status === "保存成功！" ? "text-green-600" : "text-red-600"
+        }`}
+      >
+        {status}
+      </p>
     </div>
   );
 };
