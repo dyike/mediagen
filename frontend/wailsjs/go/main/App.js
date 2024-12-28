@@ -10,6 +10,10 @@ export function GetConfig() {
   return window['go']['main']['App']['GetConfig']();
 }
 
+export function OpenDownloadDir() {
+  return window['go']['main']['App']['OpenDownloadDir']();
+}
+
 export function OrganizeContent(arg1) {
   return window['go']['main']['App']['OrganizeContent'](arg1);
 }

@@ -10,20 +10,21 @@ import (
 	"os/exec"
 	"strings"
 
-	config "github.com/dyike/mediagen/internal/Config"
+	"github.com/dyike/mediagen/internal/model"
+	"github.com/dyike/mediagen/internal/repo/settings"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
 type App struct {
-	ctx           context.Context
-	configManager *config.ConfigManager
+	ctx          context.Context
+	settingsRepo settings.SettingsRepo
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{
-		configManager: config.NewConfigManager(),
+		settingsRepo: settings.NewSettingsRepo(),
 	}
 }
 
@@ -31,7 +32,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	err := a.configManager.LoadConfig()
+	err := a.settingsRepo.InitAppConfig()
 	if err != nil {
 		runtime.LogErrorf(a.ctx, "Load config failed: %v", err)
 	}
@@ -41,12 +42,13 @@ func (a *App) shutdown(ctx context.Context) {
 
 }
 
-func (a *App) GetConfig() (config.AppConfig, error) {
-	return a.configManager.GetConfig(), nil
+func (a *App) GetConfig() (model.AppConfig, error) {
+	return a.settingsRepo.GetAppConfig(), nil
 }
 
-func (a *App) UpdateConfig(newConfig config.AppConfig) error {
-	return a.configManager.UpdateConfig(newConfig)
+func (a *App) UpdateConfig(newConfig model.AppConfig) error {
+	fmt.Println("====================", newConfig)
+	return a.settingsRepo.UpdateAppConfig(newConfig)
 }
 
 func (a *App) DownloadVideo(url string) (string, error) {
@@ -147,4 +149,15 @@ func (a *App) OrganizeContent(content string) (string, error) {
 	}
 
 	return "", fmt.Errorf("未获得有效响应")
+}
+
+func (a *App) OpenDownloadDir() (string, error) {
+	options := runtime.OpenDialogOptions{
+		Title: "选择下载目录",
+	}
+	selectedDir, err := runtime.OpenDirectoryDialog(a.ctx, options)
+	if err != nil {
+		return "", fmt.Errorf("打开目录选择对话框失败: %v", err)
+	}
+	return selectedDir, nil
 }

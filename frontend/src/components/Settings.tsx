@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GetConfig, UpdateConfig } from "../../wailsjs/go/main/App";
+import { GetConfig, UpdateConfig, OpenDownloadDir } from "../../wailsjs/go/main/App";
 
 interface Config {
   openai_key: string;
@@ -49,21 +49,19 @@ const Settings: React.FC = () => {
 
   const handleSelectFolder = async () => {
     try {
-      const selectedPath = await window.wails.FileDialog.OpenDialog({
-        title: "选择下载路径",
-        directory: true,
-        multiple: false,
-      });
-      if (selectedPath) {
-        setConfig({ ...config, download_dir: selectedPath });
+      const folderPath = await OpenDownloadDir();
+      if (folderPath) {
+        setConfig({ ...config, download_dir: folderPath });
+      } else {
+        console.log("未选择文件夹");
       }
     } catch (err) {
-      console.error("选择路径失败", err);
+      console.error("选择文件夹失败", err);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition duration-300">
+    <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-xl transition duration-300">
       {/* Title */}
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         设置

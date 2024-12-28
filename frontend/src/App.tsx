@@ -22,7 +22,7 @@ const App = () => {
                 : "hover:bg-blue-600"
             }`}
           >
-            📥 下载器
+            📥 处理任务
           </button>
           <button
             onClick={() => setCurrentPage("settings")}

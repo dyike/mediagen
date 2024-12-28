@@ -1,4 +1,4 @@
-export namespace config {
+export namespace model {
 	
 	export class AppConfig {
 	    openai_key: string;
