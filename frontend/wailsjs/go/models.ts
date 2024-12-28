@@ -18,6 +18,26 @@ export namespace model {
 	        this.download_dir = source["download_dir"];
 	    }
 	}
+	export class TaskPo {
+	    id: number;
+	    task: string;
+	    video_url: string;
+	    created_at: number;
+	    updated_at: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new TaskPo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.task = source["task"];
+	        this.video_url = source["video_url"];
+	        this.created_at = source["created_at"];
+	        this.updated_at = source["updated_at"];
+	    }
+	}
 
 }
 

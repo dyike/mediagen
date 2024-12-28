@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	appConfigFile = "app_config.json"
+	appConfigFile = "./data/app_config.json"
 )
 
 type SettingsRepo interface {

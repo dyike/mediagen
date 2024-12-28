@@ -9,9 +9,12 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
+	"github.com/dyike/mediagen/internal/db"
 	"github.com/dyike/mediagen/internal/model"
 	"github.com/dyike/mediagen/internal/repo/settings"
+	"github.com/dyike/mediagen/internal/repo/task"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -19,12 +22,19 @@ import (
 type App struct {
 	ctx          context.Context
 	settingsRepo settings.SettingsRepo
+	taskRepo     task.TaskRepo
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
+	db, err := db.InitDB()
+	if err != nil {
+		runtime.LogErrorf(context.Background(), "DB init failed: %v", err)
+		return nil
+	}
 	return &App{
 		settingsRepo: settings.NewSettingsRepo(),
+		taskRepo:     task.NewTaskRepo(db),
 	}
 }
 
@@ -47,8 +57,36 @@ func (a *App) GetConfig() (model.AppConfig, error) {
 }
 
 func (a *App) UpdateConfig(newConfig model.AppConfig) error {
-	fmt.Println("====================", newConfig)
 	return a.settingsRepo.UpdateAppConfig(newConfig)
+}
+
+func (a *App) OpenDownloadDir() (string, error) {
+	options := runtime.OpenDialogOptions{
+		Title: "选择下载目录",
+	}
+	selectedDir, err := runtime.OpenDirectoryDialog(a.ctx, options)
+	if err != nil {
+		return "", fmt.Errorf("打开目录选择对话框失败: %v", err)
+	}
+	return selectedDir, nil
+}
+
+func (a *App) AddTask(videoUrl string) error {
+	task := model.TaskPo{
+		VideoUrl:  videoUrl,
+		TaskId:    model.GenerateTaskId(),
+		CreatedAt: time.Now().UnixMilli(),
+		UpdatedAt: time.Now().UnixMilli(),
+	}
+	return a.taskRepo.Create(&task)
+}
+
+func (a *App) GetTasks() ([]model.TaskPo, error) {
+	return a.taskRepo.List()
+}
+
+func (a *App) DeleteTask(id int) error {
+	return a.taskRepo.Delete(id)
 }
 
 func (a *App) DownloadVideo(url string) (string, error) {
@@ -149,15 +187,4 @@ func (a *App) OrganizeContent(content string) (string, error) {
 	}
 
 	return "", fmt.Errorf("未获得有效响应")
-}
-
-func (a *App) OpenDownloadDir() (string, error) {
-	options := runtime.OpenDialogOptions{
-		Title: "选择下载目录",
-	}
-	selectedDir, err := runtime.OpenDirectoryDialog(a.ctx, options)
-	if err != nil {
-		return "", fmt.Errorf("打开目录选择对话框失败: %v", err)
-	}
-	return selectedDir, nil
 }

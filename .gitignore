@@ -2,3 +2,5 @@ build
 node_modules
 frontend/dist
 app_config.json
+data
+

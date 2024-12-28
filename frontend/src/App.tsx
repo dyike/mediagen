@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Downloader from "./components/Downloader";
+import TaskManager from "./components/TaskManager";
 import Settings from "./components/Settings";
 
 const App = () => {
-  const [currentPage, setCurrentPage] = useState("downloader");
+  const [currentPage, setCurrentPage] = useState("taskManager");
   const [darkMode, setDarkMode] = useState(false);
 
   return (
@@ -14,15 +14,15 @@ const App = () => {
           <h1 className="text-lg font-bold tracking-wide">视频转XHS文案生成器</h1>
         </div>
         <div className="mt-4 flex-1">
-          <button
-            onClick={() => setCurrentPage("downloader")}
+        <button
+            onClick={() => setCurrentPage("taskManager")}
             className={`w-full text-left px-4 py-3 font-medium rounded-l-full transition duration-300 my-2 ${
-              currentPage === "downloader"
+              currentPage === "taskManager"
                 ? "bg-white text-blue-700 shadow-md"
                 : "hover:bg-blue-600"
             }`}
           >
-            📥 处理任务
+            📥 任务管理
           </button>
           <button
             onClick={() => setCurrentPage("settings")}
@@ -51,7 +51,7 @@ const App = () => {
       {/* 右侧内容区域 */}
       <main className="flex-1 p-8">
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 transition duration-300">
-          {currentPage === "downloader" && <Downloader />}
+          {currentPage === "taskManager" && <TaskManager />}
           {currentPage === "settings" && <Settings />}
         </div>
       </main>
