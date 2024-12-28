@@ -22,6 +22,7 @@ export namespace model {
 	    id: number;
 	    task: string;
 	    video_url: string;
+	    task_status: string;
 	    created_at: number;
 	    updated_at: number;
 	
@@ -34,6 +35,7 @@ export namespace model {
 	        this.id = source["id"];
 	        this.task = source["task"];
 	        this.video_url = source["video_url"];
+	        this.task_status = source["task_status"];
 	        this.created_at = source["created_at"];
 	        this.updated_at = source["updated_at"];
 	    }

@@ -5,24 +5,31 @@ interface Task {
   Id: number;
   TaskID: string;
   VideoURL: string;
+  TaskStatus: string;
   CreatedAt: number;
   UpdatedAt: number;
 }
 
+const PAGE_SIZE = 2;
+
 const TaskManager: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [videoURL, setVideoURL] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchTasks = async () => {
     try {
       const result = await GetTasks();
-      const mappedTasks: Task[] = result.map((taskPo) => ({
-        Id: taskPo.id,
-        TaskID: taskPo.task,
-        VideoURL: taskPo.video_url,
-        CreatedAt: taskPo.created_at,
-        UpdatedAt: taskPo.updated_at,
-      }));
+      const mappedTasks: Task[] = result
+        .map((taskPo) => ({
+          Id: taskPo.id,
+          TaskID: taskPo.task,
+          VideoURL: taskPo.video_url,
+          TaskStatus: taskPo.task_status,
+          CreatedAt: taskPo.created_at,
+          UpdatedAt: taskPo.updated_at,
+        }))
+        .sort((a, b) => b.Id - a.Id); // Sort tasks by ID in descending order
       setTasks(mappedTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -47,12 +54,25 @@ const TaskManager: React.FC = () => {
     await DeleteTask(ID);
     fetchTasks();
   };
+  
+  const totalPages = Math.ceil(tasks.length / PAGE_SIZE);
+  const currentTasks = tasks.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-xl transition duration-300">
       <h2 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         任务管理
       </h2>
+
       {/* Create Task Section */}
       <div className="mb-8">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -80,13 +100,13 @@ const TaskManager: React.FC = () => {
         <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
           任务列表
         </h2>
-        {tasks.length === 0 ? (
+        {currentTasks.length === 0 ? (
           <p className="text-gray-500 dark:text-gray-400 text-center">
-            No tasks available.
+            当前无任务.
           </p>
         ) : (
           <ul className="space-y-4">
-            {tasks.map((task) => (
+            {currentTasks.map((task) => (
               <li
                 key={task.TaskID}
                 className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center"
@@ -96,6 +116,9 @@ const TaskManager: React.FC = () => {
                     <a href={task.VideoURL} target="_blank" rel="noopener noreferrer">
                       {task.VideoURL}
                     </a>
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    任务状态: {task.TaskStatus || "未知"}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                     创建时间:{" "}
@@ -129,6 +152,37 @@ const TaskManager: React.FC = () => {
               </li>
             ))}
           </ul>
+        )}
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="mt-6 flex justify-center items-center space-x-4">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded-lg shadow-md ${
+                currentPage === 1
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
+            >
+              上一页
+            </button>
+            <span className="text-gray-800 dark:text-gray-100">
+              页 {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded-lg shadow-md ${
+                currentPage === totalPages
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-500 text-white hover:bg-blue-600"
+              }`}
+            >
+              下一页
+            </button>
+          </div>
         )}
       </div>
     </div>

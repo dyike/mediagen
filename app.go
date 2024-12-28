@@ -73,10 +73,11 @@ func (a *App) OpenDownloadDir() (string, error) {
 
 func (a *App) AddTask(videoUrl string) error {
 	task := model.TaskPo{
-		VideoUrl:  videoUrl,
-		TaskId:    model.GenerateTaskId(),
-		CreatedAt: time.Now().UnixMilli(),
-		UpdatedAt: time.Now().UnixMilli(),
+		VideoUrl:   videoUrl,
+		TaskId:     model.GenerateTaskId(),
+		TaskStatus: model.TaskStatus_Init,
+		CreatedAt:  time.Now().UnixMilli(),
+		UpdatedAt:  time.Now().UnixMilli(),
 	}
 	return a.taskRepo.Create(&task)
 }

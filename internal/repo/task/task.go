@@ -30,7 +30,7 @@ func (t *taskImpl) Delete(id int) error {
 
 func (t *taskImpl) List() ([]model.TaskPo, error) {
 	var tasks []model.TaskPo
-	err := t.db.Find(&tasks).Error
+	err := t.db.Order("id desc").Find(&tasks).Error
 	return tasks, err
 }
 
