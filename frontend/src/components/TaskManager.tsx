@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { GetTasks, AddTask, DeleteTask } from "../../wailsjs/go/main/App";
 
 interface Task {
@@ -54,7 +55,7 @@ const TaskManager: React.FC = () => {
     await DeleteTask(ID);
     fetchTasks();
   };
-  
+
   const totalPages = Math.ceil(tasks.length / PAGE_SIZE);
   const currentTasks = tasks.slice(
     (currentPage - 1) * PAGE_SIZE,
@@ -109,39 +110,39 @@ const TaskManager: React.FC = () => {
             {currentTasks.map((task) => (
               <li
                 key={task.TaskID}
-                className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center"
+                className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-shadow flex items-center"
               >
                 <div className="flex-grow">
-                  <p className="text-lg font-medium text-blue-600 dark:text-blue-400 truncate">
-                    <a href={task.VideoURL} target="_blank" rel="noopener noreferrer">
+                  <Link to={`/task/${task.Id}`} className="block">
+                    <p className="text-lg font-medium text-blue-600 dark:text-blue-400 truncate">
                       {task.VideoURL}
-                    </a>
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    任务状态: {task.TaskStatus || "未知"}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    创建时间:{" "}
-                    {new Date(task.CreatedAt).toLocaleString("zh-CN", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    })}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    更新时间:{" "}
-                    {new Date(task.UpdatedAt).toLocaleString("zh-CN", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    })}
-                  </p>
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      任务状态: {task.TaskStatus || "未知"}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      创建时间:{" "}
+                      {new Date(task.CreatedAt).toLocaleString("zh-CN", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      })}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      更新时间:{" "}
+                      {new Date(task.UpdatedAt).toLocaleString("zh-CN", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                      })}
+                    </p>
+                  </Link>
                 </div>
                 <button
                   onClick={() => handleDeleteTask(task.Id)}
@@ -154,17 +155,17 @@ const TaskManager: React.FC = () => {
           </ul>
         )}
 
+
         {/* Pagination Controls */}
         {totalPages > 1 && (
           <div className="mt-6 flex justify-center items-center space-x-4">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-lg shadow-md ${
-                currentPage === 1
+              className={`px-4 py-2 rounded-lg shadow-md ${currentPage === 1
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
+                }`}
             >
               上一页
             </button>
@@ -174,11 +175,10 @@ const TaskManager: React.FC = () => {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded-lg shadow-md ${
-                currentPage === totalPages
+              className={`px-4 py-2 rounded-lg shadow-md ${currentPage === totalPages
                   ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                   : "bg-blue-500 text-white hover:bg-blue-600"
-              }`}
+                }`}
             >
               下一页
             </button>
