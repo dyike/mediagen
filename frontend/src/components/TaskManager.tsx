@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { MediaService } from "../../bindings/github.com/dyike/mediagen";
+import { useNewTask } from "../App";
 
 interface Task {
   Id: number;
@@ -13,10 +14,19 @@ interface Task {
 
 const PAGE_SIZE = 2;
 
-const TaskManager: React.FC = () => {
+const TaskManager = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [videoURL, setVideoURL] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { newTaskTrigger } = useNewTask();
+
+  // 当点击新建任务按钮时，聚焦输入框
+  useEffect(() => {
+    if (newTaskTrigger > 0 && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [newTaskTrigger]);
 
   const fetchTasks = async () => {
     try {
@@ -78,6 +88,7 @@ const TaskManager: React.FC = () => {
         </label>
         <div className="flex gap-2">
           <input
+            ref={inputRef}
             type="text"
             value={videoURL}
             onChange={(e) => setVideoURL(e.target.value)}
