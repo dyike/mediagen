@@ -59,6 +59,26 @@ func (m *MediaService) UpdateConfig(newConfig model.AppConfig) error {
 	return m.settingsRepo.UpdateAppConfig(newConfig)
 }
 
+func (m *MediaService) OpenSettingsWindow() {
+	if m.app == nil {
+		return
+	}
+	m.app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Title:     "设置",
+		Width:     800,
+		Height:    600,
+		MinWidth:  600,
+		MinHeight: 400,
+		Mac: application.MacWindow{
+			Backdrop: application.MacBackdropTranslucent,
+		},
+		MinimiseButtonState: application.ButtonDisabled,
+		MaximiseButtonState: application.ButtonDisabled,
+		BackgroundColour:    application.NewRGB(27, 38, 54),
+		URL:                 "/settings",
+	})
+}
+
 func (m *MediaService) OpenDownloadDir() (string, error) {
 	if m.app == nil {
 		return "", fmt.Errorf("application not initialized")

@@ -47,6 +47,10 @@ export function OpenDownloadDir(): $CancellablePromise<string> {
     return $Call.ByID(1527975828);
 }
 
+export function OpenSettingsWindow(): $CancellablePromise<void> {
+    return $Call.ByID(1367546872);
+}
+
 export function OrganizeContent(content: string): $CancellablePromise<string> {
     return $Call.ByID(3597130505, content);
 }
