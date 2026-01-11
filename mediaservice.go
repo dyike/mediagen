@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -15,82 +16,84 @@ import (
 	"github.com/dyike/mediagen/internal/model"
 	"github.com/dyike/mediagen/internal/repo/settings"
 	"github.com/dyike/mediagen/internal/repo/task"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
-// App struct
-type App struct {
-	ctx          context.Context
+type MediaService struct {
+	app          *application.App
 	settingsRepo settings.SettingsRepo
 	taskRepo     task.TaskRepo
 }
 
-// NewApp creates a new App application struct
-func NewApp() *App {
-	db, err := db.InitDB()
+func NewMediaService() *MediaService {
+	database, err := db.InitDB()
 	if err != nil {
-		runtime.LogErrorf(context.Background(), "DB init failed: %v", err)
+		log.Printf("DB init failed: %v", err)
 		return nil
 	}
-	return &App{
+	return &MediaService{
 		settingsRepo: settings.NewSettingsRepo(),
-		taskRepo:     task.NewTaskRepo(db),
+		taskRepo:     task.NewTaskRepo(database),
 	}
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
-	err := a.settingsRepo.InitAppConfig()
+// SetApp sets the application instance (called from main after app creation)
+func (m *MediaService) SetApp(app *application.App) {
+	m.app = app
+}
+
+// OnStartup is called when the service starts
+func (m *MediaService) OnStartup(ctx context.Context, options application.ServiceOptions) error {
+	err := m.settingsRepo.InitAppConfig()
 	if err != nil {
-		runtime.LogErrorf(a.ctx, "Load config failed: %v", err)
+		log.Printf("Load config failed: %v", err)
 	}
+	return nil
 }
 
-func (a *App) shutdown(ctx context.Context) {
-
+func (m *MediaService) GetConfig() (model.AppConfig, error) {
+	return m.settingsRepo.GetAppConfig(), nil
 }
 
-func (a *App) GetConfig() (model.AppConfig, error) {
-	return a.settingsRepo.GetAppConfig(), nil
+func (m *MediaService) UpdateConfig(newConfig model.AppConfig) error {
+	return m.settingsRepo.UpdateAppConfig(newConfig)
 }
 
-func (a *App) UpdateConfig(newConfig model.AppConfig) error {
-	return a.settingsRepo.UpdateAppConfig(newConfig)
-}
-
-func (a *App) OpenDownloadDir() (string, error) {
-	options := runtime.OpenDialogOptions{
-		Title: "选择下载目录",
+func (m *MediaService) OpenDownloadDir() (string, error) {
+	if m.app == nil {
+		return "", fmt.Errorf("application not initialized")
 	}
-	selectedDir, err := runtime.OpenDirectoryDialog(a.ctx, options)
+	selectedDir, err := m.app.Dialog.OpenFile().
+		SetTitle("选择下载目录").
+		CanChooseDirectories(true).
+		CanChooseFiles(false).
+		PromptForSingleSelection()
 	if err != nil {
 		return "", fmt.Errorf("打开目录选择对话框失败: %v", err)
 	}
 	return selectedDir, nil
 }
 
-func (a *App) AddTask(videoUrl string) error {
-	task := model.TaskPo{
+func (m *MediaService) AddTask(videoUrl string) error {
+	t := model.TaskPo{
 		VideoUrl:   videoUrl,
 		TaskId:     model.GenerateTaskId(),
 		TaskStatus: model.TaskStatus_Init,
 		CreatedAt:  time.Now().UnixMilli(),
 		UpdatedAt:  time.Now().UnixMilli(),
 	}
-	return a.taskRepo.Create(&task)
+	return m.taskRepo.Create(&t)
 }
 
-func (a *App) GetTasks() ([]model.TaskPo, error) {
-	return a.taskRepo.List()
+func (m *MediaService) GetTasks() ([]model.TaskPo, error) {
+	return m.taskRepo.List()
 }
 
-func (a *App) DeleteTask(id int) error {
-	return a.taskRepo.Delete(id)
+func (m *MediaService) DeleteTask(id int) error {
+	return m.taskRepo.Delete(id)
 }
 
-func (a *App) DownloadVideo(url string) (string, error) {
+func (m *MediaService) DownloadVideo(url string) (string, error) {
 	cmd := exec.Command("yt-dlp", "-f", "bestvideo+bestaudio/best", "-o", "./downloads/%(title)s.%(ext)s", url)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -111,7 +114,7 @@ func (a *App) DownloadVideo(url string) (string, error) {
 	return "", fmt.Errorf("未找到下载路径")
 }
 
-func (a *App) TranscribeAudio(audioPath string) (string, error) {
+func (m *MediaService) TranscribeAudio(audioPath string) (string, error) {
 	cmd := exec.Command("whisper", audioPath, "--language", "zh", "--model", "medium", "--output_format", "txt")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -143,7 +146,7 @@ type ChatCompletionResponse struct {
 	} `json:"choices"`
 }
 
-func (a *App) OrganizeContent(content string) (string, error) {
+func (m *MediaService) OrganizeContent(content string) (string, error) {
 	apiKey := "YOUR_OPENAI_API_KEY"
 	url := "https://api.openai.com/v1/chat/completions"
 

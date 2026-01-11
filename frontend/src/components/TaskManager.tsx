@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { GetTasks, AddTask, DeleteTask } from "../../wailsjs/go/main/App";
+import { MediaService } from "../../bindings/github.com/dyike/mediagen";
 
 interface Task {
   Id: number;
@@ -20,7 +20,7 @@ const TaskManager: React.FC = () => {
 
   const fetchTasks = async () => {
     try {
-      const result = await GetTasks();
+      const result = await MediaService.GetTasks();
       const mappedTasks: Task[] = result
         .map((taskPo) => ({
           Id: taskPo.id,
@@ -30,7 +30,7 @@ const TaskManager: React.FC = () => {
           CreatedAt: taskPo.created_at,
           UpdatedAt: taskPo.updated_at,
         }))
-        .sort((a, b) => b.Id - a.Id); // Sort tasks by ID in descending order
+        .sort((a, b) => b.Id - a.Id);
       setTasks(mappedTasks);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -46,13 +46,13 @@ const TaskManager: React.FC = () => {
       alert("Video URL cannot be empty.");
       return;
     }
-    await AddTask(videoURL);
+    await MediaService.AddTask(videoURL);
     setVideoURL("");
     fetchTasks();
   };
 
   const handleDeleteTask = async (ID: number) => {
-    await DeleteTask(ID);
+    await MediaService.DeleteTask(ID);
     fetchTasks();
   };
 

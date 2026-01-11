@@ -1,6 +1,6 @@
 package model
 
-import "code.byted.org/gopkg/rand"
+import "math/rand"
 
 type TaskPo struct {
 	Id         int    `gorm:"column:id;primary_key;AUTO_INCREMENT" json:"id"`

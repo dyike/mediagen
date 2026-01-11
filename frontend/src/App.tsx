@@ -37,8 +37,8 @@ const Sidebar = ({ darkMode, setDarkMode }: { darkMode: boolean; setDarkMode: (m
         <h1 className="text-lg font-bold tracking-wide">视频转XHS文案生成器</h1>
       </div>
       <div className="mt-4 flex-1">
-        <NavItem to="/" label="📥 任务管理" active={location.pathname === "/"} />
-        <NavItem to="/settings" label="⚙️ 设置" active={location.pathname === "/settings"} />
+        <NavItem to="/" label="任务管理" active={location.pathname === "/"} />
+        <NavItem to="/settings" label="设置" active={location.pathname === "/settings"} />
       </div>
       <div className="p-4">
         <button
@@ -49,7 +49,7 @@ const Sidebar = ({ darkMode, setDarkMode }: { darkMode: boolean; setDarkMode: (m
         </button>
       </div>
       <footer className="p-4 text-center text-sm opacity-75">
-        © 2024 媒体生成器
+        MediaGen
       </footer>
     </nav>
   );

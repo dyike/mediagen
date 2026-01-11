@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GetConfig, UpdateConfig, OpenDownloadDir } from "../../wailsjs/go/main/App";
+import { MediaService } from "../../bindings/github.com/dyike/mediagen";
 
 interface Config {
   openai_key: string;
@@ -21,7 +21,7 @@ const Settings: React.FC = () => {
   useEffect(() => {
     const fetchConfig = async () => {
       try {
-        const result = await GetConfig();
+        const result = await MediaService.GetConfig();
         setConfig(result);
       } catch (err) {
         console.error("加载配置失败", err);
@@ -33,13 +33,13 @@ const Settings: React.FC = () => {
   const handleSave = async () => {
     setStatus("正在保存...");
     try {
-      await UpdateConfig(config);
+      await MediaService.UpdateConfig(config);
       setStatus("保存成功！");
-      setTimeout(() => setStatus(""), 3000); // 清除状态
+      setTimeout(() => setStatus(""), 3000);
     } catch (err) {
       console.error("保存配置失败", err);
       setStatus("保存失败！");
-      setTimeout(() => setStatus(""), 3000); // 清除状态
+      setTimeout(() => setStatus(""), 3000);
     }
   };
 
@@ -49,7 +49,7 @@ const Settings: React.FC = () => {
 
   const handleSelectFolder = async () => {
     try {
-      const folderPath = await OpenDownloadDir();
+      const folderPath = await MediaService.OpenDownloadDir();
       if (folderPath) {
         setConfig({ ...config, download_dir: folderPath });
       } else {

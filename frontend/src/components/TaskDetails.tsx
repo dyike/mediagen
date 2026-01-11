@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 const TaskDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate(); // 获取导航函数
+  const navigate = useNavigate();
 
   // 模拟从后端获取任务详情
   const task = {
@@ -31,7 +31,7 @@ const TaskDetails: React.FC = () => {
 
       {/* 返回按钮 */}
       <button
-        onClick={() => navigate(-1)} // 返回上一页
+        onClick={() => navigate(-1)}
         className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
       >
         返回
