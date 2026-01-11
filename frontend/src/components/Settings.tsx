@@ -61,20 +61,16 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-xl transition duration-300">
-      {/* Title */}
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
-        设置
-      </h2>
+    <div className="p-6 max-w-xl">
 
       {/* OpenAI Key */}
-      <div className="mb-8">
-        <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
-          OpenAI 密钥:
+      <div className="mb-5">
+        <label className="block text-sm font-medium mb-2">
+          OpenAI 密钥
         </label>
         <input
           type="text"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           value={config.openai_key}
           onChange={(e) => handleChange("openai_key", e.target.value)}
           placeholder="请输入 OpenAI 密钥"
@@ -82,74 +78,56 @@ const Settings: React.FC = () => {
       </div>
 
       {/* Whisper Model */}
-      <div className="mb-8">
-        <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
-          Whisper 模型:
+      <div className="mb-5">
+        <label className="block text-sm font-medium mb-2">
+          Whisper 模型
         </label>
-        <div className="relative">
-          <select
-            className="w-full px-4 py-3 appearance-none border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            value={config.whisper_model}
-            onChange={(e) => handleChange("whisper_model", e.target.value)}
-          >
-            {["tiny", "base", "small", "medium", "large"].map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-400 dark:text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.707a1 1 0 011.414 0L10 11.414l3.293-3.707a1 1 0 011.414 0 .75.75 0 010 1.06l-4 4a1 1 0 01-1.414 0l-4-4a.75.75 0 010-1.06z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </span>
-        </div>
+        <select
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          value={config.whisper_model}
+          onChange={(e) => handleChange("whisper_model", e.target.value)}
+        >
+          {["tiny", "base", "small", "medium", "large"].map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Download Path */}
-      <div className="mb-8">
-        <label className="block text-sm font-semibold text-gray-600 dark:text-gray-300 mb-3">
-          视频下载路径:
+      <div className="mb-6">
+        <label className="block text-sm font-medium mb-2">
+          视频下载路径
         </label>
-        <div className="flex items-center space-x-4">
+        <div className="flex gap-2">
           <input
             type="text"
-            className="flex-grow px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
             value={config.download_dir}
             readOnly
           />
           <button
             onClick={handleSelectFolder}
-            className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="px-4 py-2 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 focus:outline-none"
           >
-            选择路径
+            选择
           </button>
         </div>
       </div>
 
       {/* Save Button */}
-      <div className="text-center">
-        <button
-          onClick={handleSave}
-          className="w-full px-5 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 focus:ring-2 focus:ring-green-400 focus:outline-none"
-        >
-          保存
-        </button>
-      </div>
+      <button
+        onClick={handleSave}
+        className="w-full px-4 py-2 bg-green-500 text-white font-medium rounded-md hover:bg-green-600 focus:outline-none"
+      >
+        保存
+      </button>
 
       {/* Status Message */}
       {status && (
         <p
-          className={`mt-4 text-sm text-center ${
+          className={`mt-3 text-sm text-center ${
             status === "保存成功！" ? "text-green-600" : "text-red-600"
           }`}
         >
