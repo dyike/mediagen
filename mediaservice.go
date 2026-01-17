@@ -80,7 +80,7 @@ func (m *MediaService) OpenSettingsWindow() {
 		Mac: application.MacWindow{
 			Backdrop:                application.MacBackdropTranslucent,
 			TitleBar:                application.MacTitleBarHiddenInsetUnified,
-			InvisibleTitleBarHeight: 52,
+			InvisibleTitleBarHeight: 48,
 		},
 		MinimiseButtonState: application.ButtonDisabled,
 		MaximiseButtonState: application.ButtonDisabled,

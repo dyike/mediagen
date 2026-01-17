@@ -99,21 +99,22 @@ const Settings: React.FC = () => {
         className="w-[180px] flex-shrink-0 flex flex-col bg-[#F5F5F7] border-r border-gray-200/80"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
-        {/* 交通灯占位区域 */}
-        <div className="h-[52px] w-full flex-shrink-0" />
+        {/* 顶部 bar 区域 (交通灯 + 间距) - 48px 高度 */}
+        <div className="h-[48px] w-full flex-shrink-0" />
 
-        {/* 菜单项 */}
-        <div className="px-2 space-y-0.5" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+        {/* 菜单项 - 在 bar 下方开始，加一点顶部间距 */}
+        <div className="px-3 pt-2 space-y-0.5" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-[13px] transition-colors ${activeTab === tab.id
-                ? 'bg-[#007AFF]/10 text-[#007AFF] font-medium'
-                : 'text-gray-600 hover:bg-gray-200/60'
+              className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] transition-colors ${activeTab === tab.id
+                ? 'bg-blue-50 text-blue-600 font-medium'
+                : 'text-gray-700 hover:bg-gray-100'
                 }`}
             >
-              <span className={activeTab === tab.id ? 'text-[#007AFF]' : 'text-gray-500'}>{tab.icon}</span>
+              <span className={`w-5 h-5 flex items-center justify-center rounded ${activeTab === tab.id ? 'text-blue-600' : 'text-gray-500'
+                }`}>{tab.icon}</span>
               <span>{tab.name}</span>
             </button>
           ))}
@@ -122,14 +123,12 @@ const Settings: React.FC = () => {
 
       {/* 右侧主内容区 */}
       <div className="flex-1 overflow-auto bg-[#FAFAFA]">
-        {/* 标题区域 - 与交通灯对齐 */}
-        <div className="h-[52px] px-8 flex items-center">
+        {/* 顶部 bar 区域 (标题) - 48px 高度，与左侧对齐 */}
+        <div className="h-[48px] px-8 flex items-center border-b border-gray-200">
           <h1 className="text-[15px] font-semibold text-gray-800">
             {tabs.find(t => t.id === activeTab)?.name}
           </h1>
         </div>
-        {/* 横线 - 延伸到左边界连接侧边栏 */}
-        <hr className="border-gray-200 mt-3" />
 
         {/* 内容区域 */}
         <div className="w-full px-8 py-6">
