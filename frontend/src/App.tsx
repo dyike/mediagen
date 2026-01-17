@@ -182,15 +182,19 @@ const Sidebar = ({
 }) => {
   const location = useLocation();
 
+  // 折叠时完全隐藏
+  if (collapsed) {
+    return null;
+  }
+
   return (
     <nav
-      className={`${collapsed ? "w-[70px]" : "w-56"} transition-all duration-300 flex flex-col border-r flex-shrink-0 ${darkMode ? "bg-gray-900 border-gray-700" : "bg-gray-100 border-gray-200"
+      className={`w-56 transition-all duration-300 flex flex-col border-r flex-shrink-0 ${darkMode ? "bg-gray-900 border-gray-700" : "bg-gray-100 border-gray-200"
         }`}
     >
       {/* 导航菜单 - 可滚动 */}
       <div className="flex-1 overflow-y-auto py-2">
         <NavItem
-          collapsed={collapsed}
           to="/"
           label="任务管理"
           active={location.pathname === "/" || location.pathname.startsWith("/task/")}
@@ -210,7 +214,6 @@ const Sidebar = ({
             label="设置"
             active={location.pathname === "/settings"}
             darkMode={darkMode}
-            collapsed={collapsed}
             icon={
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -225,8 +228,7 @@ const Sidebar = ({
       <div className={`p-2 border-t flex-shrink-0 ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
         <button
           onClick={() => setDarkMode(!darkMode)}
-          className={`w-full px-2 py-2 text-sm rounded-md transition duration-200 flex items-center ${collapsed ? "justify-center" : ""
-            } ${darkMode
+          className={`w-full px-2 py-2 text-sm rounded-md transition duration-200 flex items-center ${darkMode
               ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
               : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
             }`}
@@ -234,7 +236,7 @@ const Sidebar = ({
           title={darkMode ? "浅色模式" : "深色模式"}
         >
           <span>{darkMode ? "☀️" : "🌙"}</span>
-          {!collapsed && <span className="ml-2">{darkMode ? "浅色模式" : "深色模式"}</span>}
+          <span className="ml-2">{darkMode ? "浅色模式" : "深色模式"}</span>
         </button>
       </div>
     </nav>
@@ -246,20 +248,17 @@ const NavItem = ({
   label,
   active,
   darkMode,
-  collapsed,
   icon,
 }: {
   to: string;
   label: string;
   active: boolean;
   darkMode: boolean;
-  collapsed: boolean;
   icon: React.ReactNode;
 }) => (
   <Link
     to={to}
-    className={`flex items-center mx-2 my-0.5 px-3 py-2 rounded-md text-sm transition duration-200 ${collapsed ? "justify-center" : ""
-      } ${active
+    className={`flex items-center mx-2 my-0.5 px-3 py-2 rounded-md text-sm transition duration-200 ${active
         ? darkMode
           ? "bg-gray-700 text-white"
           : "bg-gray-200 text-gray-900"
@@ -268,10 +267,9 @@ const NavItem = ({
           : "text-gray-600 hover:bg-gray-200"
       }`}
     style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-    title={collapsed ? label : undefined}
   >
     {icon}
-    {!collapsed && <span className="ml-2">{label}</span>}
+    <span className="ml-2">{label}</span>
   </Link>
 );
 
