@@ -75,7 +75,7 @@ func (m *MediaService) OpenSettingsWindow() {
 		Title:     "设置",
 		Width:     800,
 		Height:    600,
-		MinWidth:  600,
+		MinWidth:  800,
 		MinHeight: 400,
 		Mac: application.MacWindow{
 			Backdrop:                application.MacBackdropTranslucent,
