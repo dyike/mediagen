@@ -17,12 +17,14 @@ import (
 	"github.com/dyike/mediagen/internal/repo/settings"
 	"github.com/dyike/mediagen/internal/repo/task"
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/wailsapp/wails/v3/pkg/events"
 )
 
 type MediaService struct {
-	app          *application.App
-	settingsRepo settings.SettingsRepo
-	taskRepo     task.TaskRepo
+	app            *application.App
+	settingsRepo   settings.SettingsRepo
+	taskRepo       task.TaskRepo
+	settingsWindow *application.WebviewWindow
 }
 
 func NewMediaService() *MediaService {
@@ -63,19 +65,31 @@ func (m *MediaService) OpenSettingsWindow() {
 	if m.app == nil {
 		return
 	}
-	m.app.Window.NewWithOptions(application.WebviewWindowOptions{
+	// 如果设置窗口已存在，直接激活它
+	if m.settingsWindow != nil {
+		m.settingsWindow.Focus()
+		return
+	}
+	// 创建新的设置窗口
+	m.settingsWindow = m.app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title:     "设置",
 		Width:     800,
 		Height:    600,
 		MinWidth:  600,
 		MinHeight: 400,
 		Mac: application.MacWindow{
-			Backdrop: application.MacBackdropTranslucent,
+			Backdrop:                application.MacBackdropTranslucent,
+			TitleBar:                application.MacTitleBarHiddenInsetUnified,
+			InvisibleTitleBarHeight: 52,
 		},
 		MinimiseButtonState: application.ButtonDisabled,
 		MaximiseButtonState: application.ButtonDisabled,
-		BackgroundColour:    application.NewRGB(27, 38, 54),
+		BackgroundColour:    application.NewRGB(245, 245, 247), // 匹配侧边栏背景色
 		URL:                 "/settings",
+	})
+	// 监听窗口关闭事件，清除引用
+	m.settingsWindow.OnWindowEvent(events.Common.WindowClosing, func(event *application.WindowEvent) {
+		m.settingsWindow = nil
 	})
 }
 

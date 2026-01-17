@@ -1,6 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Name=My Product
+<<<<<<< HEAD
 Comment=A mediagen application
 # The Exec line includes %u to pass the URL to the application
 Exec=/usr/local/bin/mediagen %u
@@ -9,5 +10,15 @@ Type=Application
 Icon=mediagen
 Categories=Utility;
 StartupWMClass=mediagen
+=======
+Comment=My Product Description
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/ %u
+Terminal=false
+Type=Application
+Icon=
+Categories=Utility;
+StartupWMClass=
+>>>>>>> 6641490cc2a0a38eab2f5803220a07b6b018456b
 
  

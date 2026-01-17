@@ -6,8 +6,13 @@
 		"0000": {
 			"ProductVersion": "0.1.0",
 			"CompanyName": "My Company",
+<<<<<<< HEAD
 			"FileDescription": "A mediagen application",
 			"LegalCopyright": "© 2026, My Company",
+=======
+			"FileDescription": "My Product Description",
+			"LegalCopyright": "© now, My Company",
+>>>>>>> 6641490cc2a0a38eab2f5803220a07b6b018456b
 			"ProductName": "My Product",
 			"Comments": "This is a comment"
 		}

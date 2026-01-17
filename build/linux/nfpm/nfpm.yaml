@@ -3,26 +3,43 @@
 #
 # The lines below are called `modelines`. See `:help modeline`
 
+<<<<<<< HEAD
 name: "mediagen"
+=======
+name: ""
+>>>>>>> 6641490cc2a0a38eab2f5803220a07b6b018456b
 arch: ${GOARCH}
 platform: "linux"
 version: "0.1.0"
 section: "default"
 priority: "extra"
 maintainer: ${GIT_COMMITTER_NAME} <${GIT_COMMITTER_EMAIL}>
+<<<<<<< HEAD
 description: "A mediagen application"
+=======
+description: "My Product Description"
+>>>>>>> 6641490cc2a0a38eab2f5803220a07b6b018456b
 vendor: "My Company"
 homepage: "https://wails.io"
 license: "MIT"
 release: "1"
 
 contents:
+<<<<<<< HEAD
   - src: "./bin/mediagen"
     dst: "/usr/local/bin/mediagen"
   - src: "./build/appicon.png"
     dst: "/usr/share/icons/hicolor/128x128/apps/mediagen.png"
   - src: "./build/linux/mediagen.desktop"
     dst: "/usr/share/applications/mediagen.desktop"
+=======
+  - src: "./bin/"
+    dst: "/usr/local/bin/"
+  - src: "./build/appicon.png"
+    dst: "/usr/share/icons/hicolor/128x128/apps/.png"
+  - src: "./build/linux/.desktop"
+    dst: "/usr/share/applications/.desktop"
+>>>>>>> 6641490cc2a0a38eab2f5803220a07b6b018456b
 
 # Default dependencies for Debian 12/Ubuntu 22.04+ with WebKit 4.1
 depends:

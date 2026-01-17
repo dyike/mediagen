@@ -4,6 +4,7 @@ import { MediaService } from "../bindings/github.com/dyike/mediagen";
 import TaskManager from "./components/TaskManager";
 import TaskDetails from "./components/TaskDetails";
 import Settings from "./components/Settings";
+import GenerativeUI from "./components/GenerativeUI";
 
 // 创建任务的 Context
 const NewTaskContext = createContext<{ triggerNewTask: () => void; newTaskTrigger: number }>({
@@ -87,6 +88,7 @@ const AppContent = ({
           <Routes>
             <Route path="/" element={<TaskManager />} />
             <Route path="/task/:id" element={<TaskDetails />} />
+            <Route path="/generative-ui" element={<GenerativeUI />} />
             {/* Settings route handled separately above */}
             <Route path="/settings" element={<Settings />} />
           </Routes>
@@ -112,6 +114,7 @@ const TitleBar = ({
 
   const getTitle = () => {
     if (location.pathname === "/") return "任务管理";
+    if (location.pathname === "/generative-ui") return "生成式 UI";
     if (location.pathname === "/settings") return "设置";
     if (location.pathname.startsWith("/task/")) return "任务详情";
     return "";
@@ -202,6 +205,17 @@ const Sidebar = ({
           icon={
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          }
+        />
+        <NavItem
+          to="/generative-ui"
+          label="生成式 UI"
+          active={location.pathname === "/generative-ui"}
+          darkMode={darkMode}
+          icon={
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
             </svg>
           }
         />

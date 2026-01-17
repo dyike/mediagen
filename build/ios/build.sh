@@ -2,8 +2,13 @@
 set -e
 
 # Build configuration
+<<<<<<< HEAD
 APP_NAME="mediagen"
 BUNDLE_ID="com.example.mediagen"
+=======
+APP_NAME=""
+BUNDLE_ID=""
+>>>>>>> 6641490cc2a0a38eab2f5803220a07b6b018456b
 VERSION="0.1.0"
 BUILD_NUMBER="0.1.0"
 BUILD_DIR="build/ios"
